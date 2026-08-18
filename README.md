@@ -166,76 +166,13 @@ The large gap between synthetic validation and OnSite performance is the most im
 
 ## Generalization Analysis: Is the Synthetic Data Realistic Enough?
 
-The answer is **partially**. The synthetic data is realistic enough to teach the detector the basic geometric appearance of the five classes, and the model successfully detects many real objects. This is supported by the OnSite overall precision of 0.891, recall of 0.866, and mAP@0.50 of 0.912.
+The synthetic data is **partially realistic**. It successfully teaches the model the basic geometry of the five classes, as shown by the OnSite results: **0.891 precision, 0.866 recall, and 0.912 mAP@0.50**.
 
-However, the synthetic data is not yet realistic enough to reproduce the hardest underwater cases. The prediction visualization shows a clear domain-specific pattern: the relatively dry or high-contrast images receive high-confidence predictions, while underwater images with cyan/green haze, low contrast, desaturation, and small objects produce lower confidence and missed detections. The complete miss on the small circle in `clean_35247.jpg` is particularly informative because it demonstrates that the problem is not only classification; visibility and signal-to-background separation are also failing.
+However, the hardest underwater images remain challenging. Cyan/green haze, low contrast, desaturation, and small objects often lead to low-confidence or missed detections, such as the small circle in `clean_35247.jpg`. This indicates that the main issue is not only classification, but also object visibility and separation from the background.
 
-Several factors explain this gap:
+The performance gap is mainly caused by three factors: real underwater degradation is more complex than the current global haze, blur, noise, and color effects; the board is protected from much of the degradation, leaving the shapes clearer than in real images; and class-specific colors may encourage the model to rely on color instead of shape geometry. In addition, the OnSite set contains only 22 images, so per-class results should be interpreted cautiously.
 
-1. **The real underwater degradation is stronger and more structured than the current grading.** Real images may contain depth-dependent attenuation, nonuniform haze, color-dependent light absorption, backscatter, caustics, reflections, turbidity, and local contrast changes. The current script mainly applies global color blending, Gaussian blur, noise, vignette, and brightness/contrast changes.
-
-2. **The board is intentionally protected from much of the underwater degradation.** With `BOARD_ATTENUATION_FACTOR_RANGE = (0.20, 0.45)`, the shape-bearing board receives only 20%–45% of the background haze strength. At the maximum current background strength, the effective board haze is approximately `0.55 × 0.45 = 0.2475`. This may leave synthetic shapes clearer than their real counterparts.
-
-3. **The shapes may be too strongly tied to color.** Because each class has a preferred hue range, the model can learn color as a shortcut instead of relying primarily on contour and geometry. In real underwater images, the color cast and attenuation can make the original class colors unreliable.
-
-4. **The OnSite set is small and heterogeneous.** Twenty-two images are sufficient to reveal failure modes, but not sufficient to establish stable per-class estimates. The star mAP@0.50:0.95 score of 0.369, for example, may be strongly affected by a small number of instances and strict localization sensitivity.
-
-5. **The validation split is synthetic-only.** The synthetic validation score measures interpolation within the generated domain. It does not measure transfer to a new camera, pool, lighting setup, material appearance, or underwater condition. The OnSite score is therefore the more meaningful metric for the project objective.
-
-## Recommended Improvements
-
-The first improvement should be a controlled ablation rather than an immediate replacement of the whole pipeline. Generate several synthetic variants while changing only the underwater grading strength, then compare their OnSite performance using the same trained-model protocol.
-
-A practical first configuration is:
-
-```python
-BOARD_ATTENUATION_FACTOR_RANGE = (0.35, 0.75)
-HAZE_STRENGTH_RANGE = (0.20, 0.65)
-```
-
-This exposes the board and its shapes to a wider range of realistic attenuation while retaining clear examples. The objective is not to make every image extremely degraded; it is to cover the full range from clear to difficult conditions.
-
-The next improvements should be:
-
-| Priority | Improvement | Reason |
-|---:|---|---|
-| 1 | Add stronger and nonuniform board-level haze, blur, and contrast loss | The shapes are located on the board, so degrading only the distant background does not reproduce the actual object visibility problem. |
-| 2 | Randomize class colors more aggressively, including muted and shifted colors | Reduces reliance on color and encourages learning of shape geometry. |
-| 3 | Add depth-like spatial attenuation and local illumination variation | Real underwater haze is not always spatially uniform. |
-| 4 | Add caustic light patterns, reflections, suspended particles, and backscatter | These effects can alter edges and local contrast in ways that global blur cannot reproduce. |
-| 5 | Increase the number and diversity of real evaluation images | A larger OnSite set will produce more reliable per-class conclusions. |
-| 6 | Include a small, carefully selected real-image fine-tuning set only if the project rules allow it | This can improve deployment performance, but it would change the experiment from pure synthetic-to-real transfer. |
-| 7 | Report per-condition metrics | Separate dry/clear, shallow-water, deep/turbid, small-object, and low-contrast subsets to identify exactly where the model fails. |
-
-The most important experimental rule is to keep the OnSite test images completely isolated while tuning the synthetic generator. If OnSite images are repeatedly used to select parameters, they become a validation set rather than a final unseen test set. A better protocol is to use a separate real development set for tuning and reserve the final OnSite set for the final report.
-
-## Reproducibility
-
-The pipeline uses fixed random seeds in its generation stages, including seeds 42, 7, 11, 21, 33, and 55. Re-running the scripts with the same source backgrounds and environment should produce reproducible or near-reproducible outputs. The training notebook uses pretrained YOLO26s weights and the following essential command:
-
-```python
-from ultralytics import YOLO
-
-model = YOLO("yolo26s.pt")
-
-results = model.train(
-    data="data.yaml",
-    epochs=50,
-    imgsz=640,
-    batch=16,
-    device=0,
-    workers=2,
-    patience=15,
-    pretrained=True,
-    plots=True,
-    save=True,
-    val=True,
-)
-```
-
-To evaluate the trained checkpoint on the OnSite dataset, prepare an OnSite `data.yaml` file with the same five class names and run validation using the saved `best.pt` checkpoint. The OnSite images and labels must not be copied into the synthetic training or validation directories.
-
-
+Overall, the synthetic dataset is useful for synthetic-to-real transfer, but it does not yet represent the most difficult underwater conditions realistically enough.
 
 ## Conclusion
 
