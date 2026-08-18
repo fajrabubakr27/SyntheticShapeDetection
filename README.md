@@ -176,7 +176,7 @@ Overall, the synthetic dataset is useful for synthetic-to-real transfer, but it 
 
 ## Conclusion
 
-This project demonstrates a complete synthetic-to-real object-detection workflow. The model learns the five geometric classes very well within the synthetic domain and achieves meaningful transfer to real OnSite images. Nevertheless, the performance gap between the synthetic validation set and the underwater OnSite images shows that the current rendering pipeline underestimates the degradation affecting the object-bearing board and its shapes.
+This task demonstrates a complete synthetic-to-real object-detection workflow. The model learns the five geometric classes very well within the synthetic domain and achieves meaningful transfer to real OnSite images. Nevertheless, the performance gap between the synthetic validation set and the underwater OnSite images shows that the current rendering pipeline underestimates the degradation affecting the object-bearing board and its shapes.
 
 The most defensible conclusion is therefore: **the synthetic dataset is useful and partially realistic, but it is not yet sufficiently realistic for the most degraded underwater conditions**. Increasing board-level attenuation, expanding the diversity of haze and color distortion, reducing class-color shortcuts, and evaluating on a larger real set are the highest-value next steps.
 
