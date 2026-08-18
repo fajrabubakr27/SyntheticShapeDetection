@@ -1,0 +1,24 @@
+venv/
+.venv/
+
+# Main dataset
+dataset/train/
+dataset/val/
+
+# Generated dataset folders
+dataset_generation/augmented_backgrounds/
+dataset_generation/augmented_final/
+dataset_generation/boards/
+dataset_generation/boards_warped/
+dataset_generation/composites/
+dataset_generation/composites_x/
+dataset_generation/final/
+dataset_generation/final_x/
+dataset_generation/merged_dataset/
+dataset_generation/pool_backgrounds/
+dataset_generation/yolo_dataset/
+
+# OnSite data
+OnSite/images/
+OnSite/labels/
+OnSite/labels.cache

@@ -1,0 +1,10 @@
+path: C:/Users/fajra/Downloads/Vision_Career/SyntheticShapeDetection/OnSite
+train: images
+val: images
+
+names:
+  0: circle
+  1: triangle
+  2: rectangle
+  3: square
+  4: star

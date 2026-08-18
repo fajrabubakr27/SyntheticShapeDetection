@@ -1,0 +1,5 @@
+circle
+triangle
+rectangle
+square
+star
