@@ -134,8 +134,6 @@ The detector was trained in Google Colab using Ultralytics **YOLO26s** with pret
 | Validation during training | Enabled |
 | Output checkpoint | `best.pt` |
 
-The notebook reports Ultralytics 8.4.121, PyTorch 2.11.0 with CUDA support, and a YOLO26s model with approximately 9.95 million trainable parameters before fusion. Ultralytics also enabled its built-in low-probability Albumentations operations during training, including blur, median blur, grayscale conversion, and CLAHE. Albumentations is designed to keep bounding boxes synchronized with spatial image transformations when configured with the corresponding box format [2].
-
 ## Synthetic Validation Results
 
 The best checkpoint achieved the following results on the held-out synthetic validation split:
@@ -237,49 +235,7 @@ results = model.train(
 
 To evaluate the trained checkpoint on the OnSite dataset, prepare an OnSite `data.yaml` file with the same five class names and run validation using the saved `best.pt` checkpoint. The OnSite images and labels must not be copied into the synthetic training or validation directories.
 
-## Suggested Repository Structure
 
-```text
-project_root/
-├── dataset_generation/
-│   ├── 01_augment_backgrounds.py
-│   ├── 02_generate_boards.py
-│   ├── 03_perspective_transform.py
-│   ├── 04_composite.py
-│   ├── 05_underwater_grading.py
-│   ├── 06_to_yolo_format.py
-│   ├── 07_final_augmentation.py
-│   ├── 08_merge_datasets.py
-│   ├── 09_visualization.py
-│   └── 10_split_dataset.py
-├── dataset/
-│   ├── data.yaml
-│   ├── train/images/
-│   ├── train/labels/
-│   ├── val/images/
-│   └── val/labels/
-├── OnSite/
-│   ├── data.yaml
-│   ├── images/
-│   └── labels/
-├── training/
-│   └── train.ipynb
-├── model/
-│   └── best.pt
-└── README.md
-```
-
-## Definition of Done
-
-- [x] Synthetic dataset creation completed.
-- [x] Five target classes implemented: circle, triangle, rectangle, square, and star.
-- [x] Variations added for backgrounds, lighting, scale, rotation, perspective, cropping, blur, noise, contrast, saturation, and multiple objects.
-- [x] YOLO-format annotations generated and visually checked.
-- [x] Model trained on Google Colab without using the OnSite images for training.
-- [x] OnSite images annotated using CVAT and exported in YOLO format.
-- [x] Evaluation performed on the held-out OnSite dataset.
-- [x] Synthetic-versus-real generalization analyzed.
-- [ ] Optional next step: repeat the evaluation after improving underwater grading and compare the results through an ablation table.
 
 ## Conclusion
 
@@ -287,14 +243,7 @@ This project demonstrates a complete synthetic-to-real object-detection workflow
 
 The most defensible conclusion is therefore: **the synthetic dataset is useful and partially realistic, but it is not yet sufficiently realistic for the most degraded underwater conditions**. Increasing board-level attenuation, expanding the diversity of haze and color distortion, reducing class-color shortcuts, and evaluating on a larger real set are the highest-value next steps.
 
-## References
 
-[1]: https://docs.ultralytics.com/datasets/detect "Ultralytics: Object Detection Datasets Overview"
-[2]: https://albumentations.ai/docs/3-basic-usage/bounding-boxes-augmentations/ "Albumentations: Bounding Box Augmentations"
-[3]: https://opencv-opencv.mintlify.app/ "OpenCV Documentation"
-[4]: https://docs.ultralytics.com/modes/train "Ultralytics: Model Training"
-[5]: https://docs.ultralytics.com/modes/val "Ultralytics: Model Validation"
-[6]: https://docs.cvat.ai/docs/dataset_management/formats/format-yolo/ "CVAT: YOLO Dataset Format"
 
 ---
 
