@@ -1,14 +1,14 @@
 # Synthetic 2D Shape Detection
 
-This project builds a synthetic object-detection dataset for five geometric shapes, trains a YOLO26s detector on synthetic images, and evaluates whether the learned detector generalizes to real-world/on-site images that were not used during training.
+This task builds a synthetic object-detection dataset for five geometric shapes, trains a YOLO26s detector on synthetic images, and evaluates whether the learned detector generalizes to real-world/on-site images that were not used during training.
 
 > **Main question:** Are the synthetic images realistic enough to represent the visual conditions encountered in the real underwater/on-site environment?
 
-The target classes are **circle**, **triangle**, **rectangle**, **square**, and **star**. The synthetic generation pipeline was implemented primarily with **Python, OpenCV, NumPy, Pillow, and custom image-processing utilities**. The training stage used **Ultralytics YOLO26s** on Google Colab with a Tesla T4 GPU. YOLO-compatible bounding-box labels were generated in the standard normalized format described in the Ultralytics object-detection dataset documentation [1].
+The target classes are **circle**, **triangle**, **rectangle**, **square**, and **star**. The synthetic generation pipeline was implemented primarily with **Python, OpenCV, NumPy, Pillow, and custom image-processing utilities**. The training stage used **Ultralytics YOLO26s** on Google Colab with a Tesla T4 GPU. YOLO-compatible bounding-box labels were generated in the standard normalized format described in the Ultralytics object-detection dataset documentation.
 
-## Project Objectives
+## Objectives
 
-The project follows three requirements:
+The task follows three requirements:
 
 | Requirement | Implementation status |
 |---|---|
@@ -38,7 +38,7 @@ The training and validation labels were checked programmatically. The supplied n
 | Validation | 120 | 120 | 213 |
 | **Total synthetic data** | **600** | **600** | **1,052** |
 
-The OnSite evaluation set contains **22 real images and 24 annotated shape instances**. Since this set is small, its metrics should be interpreted as an initial domain-generalization assessment rather than a statistically complete estimate of production performance.
+The OnSite evaluation set contains **22 real images and 24 annotated shape instances**.
 
 ## Synthetic Data-Generation Pipeline
 
