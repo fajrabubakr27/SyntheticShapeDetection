@@ -19,7 +19,7 @@ The task follows three requirements:
 The OnSite images were kept separate from the synthetic training and validation data. They were annotated after the synthetic dataset was prepared and used only for external evaluation.
 
 ## Dataset and Classes
-
+**Drive link:https://drive.google.com/drive/folders/12-FP7S8fqUPrYssDYmrIPW4PL96NQoHR?usp=sharing**
 The synthetic dataset contains **600 images** after merging the original and augmented image sets. It was split into **480 training images** and **120 validation images**. The five classes are encoded as follows:
 
 | Class ID | Class name |
